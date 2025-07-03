@@ -1,6 +1,6 @@
 # Shopping Cart
 
-Build a mini food ordering web app featuring product listing and a functional shopping cart.\
+Build a mini food ordering web app featuring product listing and a functional shopping cart.
 Prioritize correctness in functionality while getting it to look as close to the design as possible.
 
 For this task you will need to integrate to our demo e-commerce API for listing products and placing orders.
@@ -11,7 +11,7 @@ You can find our [API Documentation](https://orderfoodonline.deno.dev/public/ope
 
 API documentation is based on [OpenAPI3.1](https://swagger.io/specification/v3/) specification.
 You can also find spec file [here](https://orderfoodonline.deno.dev/public/openapi.yaml).
- 
+
 **Functional Requirements**
 
 - Display products with images
@@ -36,7 +36,7 @@ Choose any language or framework of your choice. For example our top pick for ba
 > The API immplementation example available to you at orderfoodonline.deno.dev/api is simplified and doesn't handle some edge cases intentionally.
 > Use your best judgement to build a Robust API server.
 
-**Checkout our [advanced backend challenge](./backend-challenge/README.md) for extra bonus points
+\*\*Checkout our [advanced backend challenge](./backend-challenge/README.md) for extra bonus points
 
 ## Design
 
@@ -85,4 +85,3 @@ _By following these guidelines, you should be able to build a functional and vis
 - API specification: https://orderfoodonline.deno.dev/public/openapi.yaml
 - Figma design file: [design.fig](./design.fig)
 - Red Hat Text font: https://fonts.google.com/specimen/Red+Hat+Text
-
