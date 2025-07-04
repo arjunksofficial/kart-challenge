@@ -2,6 +2,8 @@ package api
 
 import (
 	"github.com/arjunksofficial/kart-challenge/internal/entities/orders"
+	"github.com/arjunksofficial/kart-challenge/internal/entities/products"
+	"github.com/arjunksofficial/kart-challenge/internal/ready"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,10 +15,18 @@ func GetRouter() *gin.Engine {
 	router.Use(gin.ErrorLogger())
 	apiRoutes := router.Group("/api/v1")
 	// Define your routes here
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok"})
-	})
+	router.GET("/", HealthCheck)
+	// Health check endpoint
 
+	router.GET("/health", HealthCheck)
+	// Readiness check endpoint
+	router.GET("/ready", ready.Ready)
+	// Register entity-specific routes
+	products.RegisterRoutes(apiRoutes)
 	orders.RegisterRoutes(apiRoutes)
 	return router
+}
+
+func HealthCheck(c *gin.Context) {
+	c.JSON(200, gin.H{"status": "ok"})
 }
