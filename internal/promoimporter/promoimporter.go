@@ -176,8 +176,6 @@ func mergeSortedFiles(files []string, writer *bufio.Writer) {
 				s.advance()
 			}
 		}
-		if count >= 2 {
-			_, _ = writer.WriteString(min + "\n")
-		}
+		writer.WriteString(min + "\n")
 	}
 }
