@@ -9,41 +9,78 @@ services:
     restart: unless-stopped
     networks:
       - gateway-net
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass "" --dir /data
+  
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=oolio
 
-  apigw:
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - gateway-net
+
+
+  apiserver:
     build:
       context: ../..
-      dockerfile: cmd/apigw/Dockerfile
-    container_name: apigw
+      dockerfile: cmd/apiserver/Dockerfile
+    container_name: apiserver
     ports:
       - "9000:9000"
     depends_on:
       - redis
     environment:
+      - GIN_MODE=debug
+      - PORT=9000
+      - ENV=development
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    volumes:
-      - ./config/local/master.yaml:/app/config/local/master.yaml
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=your_postgres_user
+      - POSTGRES_PASSWORD=your_postgres_password
+      - POSTGRES_DB=your_postgres_db
+
+
     restart: unless-stopped
     networks:
       - gateway-net
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  sampleserver:
+  promoimporter:
     build:
       context: ../..
-      dockerfile: cmd/sampleserver/Dockerfile
-    container_name: sampleserver
-    ports:
-      - "8000:8000"
-      - "8001:8001"
+      dockerfile: cmd/promoimporter/Dockerfile
+    container_name: promoimporter
     depends_on:
       - redis
-    restart: unless-stopped
-    networks:
-      - gateway-net
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+      - FILE1_SOURCE=/app/.promos/file1.txt
+      - FILE2_SOURCE=/app/.promos/file2.txt
+      - FILE3_SOURCE=/app/.promos/file3.txt
 
 networks:
   gateway-net:
     driver: bridge
+volumes:
+  postgres-data:
+    driver: local 
+  redis-data:
+    driver: local
