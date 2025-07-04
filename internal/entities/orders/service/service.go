@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/arjunksofficial/kart-challenge/internal/core/logger"
 	"github.com/arjunksofficial/kart-challenge/internal/core/serror"
 	"github.com/arjunksofficial/kart-challenge/internal/entities/orders/models"
 	"github.com/arjunksofficial/kart-challenge/internal/entities/orders/store"
@@ -15,7 +14,6 @@ type service struct {
 	store          store.Store
 	productstore   productstore.Store
 	promocodestore promocodestore.Cache
-	logger         *logger.CustomLogger
 }
 
 type Service interface {
@@ -29,7 +27,6 @@ func New() Service {
 		store:          store.Get(),
 		productstore:   productstore.Get(),
 		promocodestore: promocodestore.Get(),
-		logger:         logger.GetLogger(),
 	}
 }
 func Get() Service {

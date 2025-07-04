@@ -85,10 +85,16 @@ func GetRedisConfig() RedisCfg {
 	return cfg.Redis
 }
 
+func SetConfig(cfg *Config) {
+	appCfg = cfg
+}
+
 func (c *Config) IsReady() bool {
-	// Implement any readiness checks here, e.g., checking Redis connection
-	// For now, we assume the service is ready if the config is loaded
-	return c != nil
+	if c.Port == "" {
+		log.Println("Port is not set in config")
+		return false
+	}
+	return true
 }
 
 // PromoImporterConfig holds the configuration for the promo importer

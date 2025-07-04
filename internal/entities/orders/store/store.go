@@ -1,16 +1,18 @@
 package store
 
 import (
+	"context"
+
 	"github.com/arjunksofficial/kart-challenge/internal/database"
 	"github.com/arjunksofficial/kart-challenge/internal/entities/orders/models"
 	"gorm.io/gorm"
 )
 
 type Store interface {
-	CreateOrder(order *models.Order) error
-	GetOrderByID(id int) (*models.Order, error)
+	CreateOrder(ctx context.Context, order *models.Order) error
+	GetOrderByID(ctx context.Context, id int) (*models.Order, error)
 
-	CreateOrderItems(orderItems []models.OrderItem) error
+	CreateOrderItems(ctx context.Context, orderItems []models.OrderItem) error
 }
 
 type store struct {
@@ -32,28 +34,28 @@ func Get() Store {
 	return postgresStore
 }
 
-func (s *store) CreateOrder(order *models.Order) error {
-	if err := s.db.Create(order).Error; err != nil {
+func (s *store) CreateOrder(ctx context.Context, order *models.Order) error {
+	if err := s.db.WithContext(ctx).Create(order).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *store) GetOrderByID(id int) (*models.Order, error) {
+func (s *store) GetOrderByID(ctx context.Context, id int) (*models.Order, error) {
 	var order models.Order
-	if err := s.db.First(&order, id).Error; err != nil {
+	if err := s.db.WithContext(ctx).First(&order, id).Error; err != nil {
 		return nil, err
 	}
 	return &order, nil
 }
 
-func (s *store) CreateOrderItems(orderItems []models.OrderItem) error {
+func (s *store) CreateOrderItems(ctx context.Context, orderItems []models.OrderItem) error {
 	if len(orderItems) == 0 {
 		return nil // No order items to create
 	}
 
 	// Use the Create method to insert multiple records
-	result := s.db.Create(&orderItems)
+	result := s.db.WithContext(ctx).Create(&orderItems)
 	if result.Error != nil {
 		return result.Error // Return any error that occurred during the creation
 	}

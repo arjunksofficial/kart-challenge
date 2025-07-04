@@ -32,12 +32,11 @@ func (s *service) CreateOrder(
 			}
 		}
 	}
-	if err := s.store.CreateOrder(&order); err != nil {
+	if err := s.store.CreateOrder(ctx, &order); err != nil {
 		return models.CreateOrderResponse{}, &serror.ServiceError{
 			Code:  http.StatusInternalServerError,
 			Error: errors.Wrap(err, "failed to create order"),
 		}
-
 	}
 	resp := models.CreateOrderResponse{
 		CouponCode: req.CouponCode,
@@ -58,7 +57,7 @@ func (s *service) CreateOrder(
 		})
 		productIDs = append(productIDs, item.ProductID)
 	}
-	if err := s.store.CreateOrderItems(orderItems); err != nil {
+	if err := s.store.CreateOrderItems(ctx, orderItems); err != nil {
 		return models.CreateOrderResponse{}, &serror.ServiceError{
 			Code:  http.StatusInternalServerError,
 			Error: errors.Wrap(err, "failed to create order item"),

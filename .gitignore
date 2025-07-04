@@ -131,3 +131,5 @@ dist
 
 .promos/
 .sorted/
+
+coverage.out

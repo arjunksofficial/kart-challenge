@@ -13,17 +13,17 @@ func GetRouter() *gin.Engine {
 	router.Use(gin.Recovery())
 	router.Use(gin.Logger())
 	router.Use(gin.ErrorLogger())
-	apiRoutes := router.Group("/api/v1")
-	// Define your routes here
 	router.GET("/", HealthCheck)
 	// Health check endpoint
-
 	router.GET("/health", HealthCheck)
 	// Readiness check endpoint
 	router.GET("/ready", ready.Ready)
+
+	apiRoutes := router.Group("/api/v1")
 	// Register entity-specific routes
 	products.RegisterRoutes(apiRoutes)
 	orders.RegisterRoutes(apiRoutes)
+
 	return router
 }
 

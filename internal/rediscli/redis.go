@@ -49,3 +49,7 @@ func CloseRedisClient() error {
 	}
 	return nil
 }
+
+func SetRedisClient(client *redis.Client) {
+	redisClient = client
+}
