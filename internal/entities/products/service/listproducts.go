@@ -10,13 +10,12 @@ import (
 )
 
 func (s *service) ListProducts(ctx context.Context) ([]models.ProductResponse, *serror.ServiceError) {
-	products, err := s.db.ListProducts()
+	products, err := s.db.ListProducts(ctx, models.ProductFilter{})
 	if err != nil {
 		return nil, &serror.ServiceError{
 			Code:  http.StatusInternalServerError,
 			Error: errors.Wrap(err, "failed to list products"),
 		}
 	}
-
 	return models.MapProductsToResponse(products), nil
 }

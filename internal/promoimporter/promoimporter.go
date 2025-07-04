@@ -14,20 +14,19 @@ import (
 
 	"github.com/arjunksofficial/kart-challenge/internal/config"
 	"github.com/arjunksofficial/kart-challenge/internal/core/logger"
-	"github.com/arjunksofficial/kart-challenge/internal/rediscli"
-	"github.com/redis/go-redis/v9"
+	promocodestore "github.com/arjunksofficial/kart-challenge/internal/entities/promocode/store"
 )
 
 const chunkSize = 5_000_000
 
 type PromoImporter struct {
-	RedisCli *redis.Client
+	RedisCli promocodestore.Cache
 	Logger   *logger.CustomLogger
 }
 
 func New() *PromoImporter {
 	return &PromoImporter{
-		RedisCli: rediscli.GetRedisClient(),
+		RedisCli: promocodestore.Get(),
 		Logger:   logger.GetLogger(),
 	}
 }
@@ -87,7 +86,7 @@ func externalSortAuto(pathOrURL, tag string) (string, error) {
 		}
 		chunk = append(chunk, line)
 		if len(chunk) >= chunkSize {
-			tmpFile := filepath.Join(os.TempDir(), fmt.Sprintf("%s_chunk_%d.txt", tag, index))
+			tmpFile := filepath.Join("./.sorted", fmt.Sprintf("%s_chunk_%d.txt", tag, index))
 			if err := writeSortedChunk(chunk, tmpFile); err != nil {
 				return "", err
 			}
@@ -97,14 +96,14 @@ func externalSortAuto(pathOrURL, tag string) (string, error) {
 		}
 	}
 	if len(chunk) > 0 {
-		tmpFile := filepath.Join(os.TempDir(), fmt.Sprintf("%s_chunk_%d.txt", tag, index))
+		tmpFile := filepath.Join("./.sorted", fmt.Sprintf("%s_chunk_%d.txt", tag, index))
 		if err := writeSortedChunk(chunk, tmpFile); err != nil {
 			return "", err
 		}
 		chunkFiles = append(chunkFiles, tmpFile)
 	}
 
-	final := filepath.Join(os.TempDir(), fmt.Sprintf("%s_sorted.txt", tag))
+	final := filepath.Join("./.sorted", fmt.Sprintf("%s_sorted.txt", tag))
 	out, _ := os.Create(final)
 	defer out.Close()
 	writer := bufio.NewWriter(out)

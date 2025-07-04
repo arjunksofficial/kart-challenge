@@ -8,17 +8,21 @@ type ProductResponse struct {
 	Image    ProductImages `json:"image"`
 }
 
+func MapProductToResponse(product Product) ProductResponse {
+	return ProductResponse{
+		ID:       product.ID,
+		Name:     product.Name,
+		Category: product.Category,
+		Price:    product.Price,
+		Image:    product.Images,
+	}
+}
+
 // MapProductsToResponse maps a slice of Product models to a slice of ProductResponse
 func MapProductsToResponse(products []Product) []ProductResponse {
 	responses := make([]ProductResponse, len(products))
 	for i, product := range products {
-		responses[i] = ProductResponse{
-			ID:       product.ID,
-			Name:     product.Name,
-			Category: product.Category,
-			Price:    product.Price,
-			Image:    product.Images,
-		}
+		responses[i] = MapProductToResponse(product)
 	}
 	return responses
 }

@@ -17,11 +17,21 @@ type store struct {
 	db *gorm.DB
 }
 
-func GetStore() Store {
+var postgresStore Store
+
+func New() Store {
 	return &store{
 		db: database.GetPostgresDB(),
 	}
 }
+
+func Get() Store {
+	if postgresStore == nil {
+		postgresStore = New()
+	}
+	return postgresStore
+}
+
 func (s *store) CreateOrder(order *models.Order) error {
 	if err := s.db.Create(order).Error; err != nil {
 		return err

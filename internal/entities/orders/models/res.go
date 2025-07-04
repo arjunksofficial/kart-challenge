@@ -5,7 +5,8 @@ import (
 )
 
 type CreateOrderResponse struct {
-	ID       int                  `json:"id"`
-	Items    []Item               `json:"items"`
-	Products []models.ProductMeta `json:"products"`
+	ID         int                            `json:"id"`
+	CouponCode string                         `json:"couponCode"`
+	Items      []Item                         `json:"items"`
+	Products   []models.ProductMetaWithImages `json:"products"`
 }

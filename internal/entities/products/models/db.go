@@ -16,6 +16,11 @@ type ProductMeta struct {
 	Price    float64 `gorm:"type:decimal(10,2);not null" json:"price"`
 }
 
+type ProductMetaWithImages struct {
+	ProductMeta
+	Images ProductImages `gorm:"foreignKey:ProductID;references:ID;constraint:OnDelete:CASCADE" json:"images"`
+}
+
 type ProductImages struct {
 	ProductID string `gorm:"primaryKey;type:text" json:"-"`
 	Thumbnail string `gorm:"type:text" json:"thumbnail"`

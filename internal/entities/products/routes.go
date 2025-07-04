@@ -11,5 +11,6 @@ func RegisterRoutes(apiRoutes *gin.RouterGroup) {
 	productRoutes := apiRoutes.Group("/products")
 	{
 		productRoutes.GET("", h.ListProducts)
+		productRoutes.GET("/:id", h.GetProductByID)
 	}
 }

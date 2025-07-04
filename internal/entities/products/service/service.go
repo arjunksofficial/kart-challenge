@@ -16,11 +16,12 @@ type service struct {
 
 type Service interface {
 	ListProducts(ctx context.Context) ([]models.ProductResponse, *serror.ServiceError)
+	GetProductByID(ctx context.Context, id string) (models.ProductResponse, *serror.ServiceError)
 }
 
 func GetService() Service {
 	return &service{
-		db:     store.GetStore(),
+		db:     store.Get(),
 		logger: logger.GetLogger(),
 	}
 }

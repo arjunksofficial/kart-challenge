@@ -12,7 +12,7 @@ type Handler struct {
 
 func New() *Handler {
 	return &Handler{
-		Service: service.GetService(),
+		Service: service.Get(),
 		logger:  logger.GetLogger(),
 	}
 }

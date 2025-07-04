@@ -70,7 +70,10 @@ func (p *PromoImporter) ValidateAndInsertToDB(ctx context.Context, f1, f2, f3 st
 		}
 		if presentIn >= 2 {
 			totalValidCodes++
-			p.RedisCli.SAdd(ctx, "valid_promo_codes", min)
+			err := p.RedisCli.AddToSet(ctx, "valid_promo_codes", min)
+			if err != nil {
+				p.Logger.Errorf("Error adding promo code to Redis: %v", err)
+			}
 		}
 	}
 	p.Logger.Infof("Total valid promo codes inserted: %d", totalValidCodes)

@@ -7,20 +7,34 @@ import (
 	"github.com/arjunksofficial/kart-challenge/internal/core/serror"
 	"github.com/arjunksofficial/kart-challenge/internal/entities/orders/models"
 	"github.com/arjunksofficial/kart-challenge/internal/entities/orders/store"
+	productstore "github.com/arjunksofficial/kart-challenge/internal/entities/products/store"
+	promocodestore "github.com/arjunksofficial/kart-challenge/internal/entities/promocode/store"
 )
 
 type service struct {
-	db     store.Store
-	logger *logger.CustomLogger
+	store          store.Store
+	productstore   productstore.Store
+	promocodestore promocodestore.Cache
+	logger         *logger.CustomLogger
 }
 
 type Service interface {
-	CreateOrder(ctx context.Context, req models.CreateOrderRequest) (models.Order, *serror.ServiceError)
+	CreateOrder(ctx context.Context, req models.CreateOrderRequest) (models.CreateOrderResponse, *serror.ServiceError)
 }
 
-func GetService() Service {
+var svc Service
+
+func New() Service {
 	return &service{
-		db:     store.GetStore(),
-		logger: logger.GetLogger(),
+		store:          store.Get(),
+		productstore:   productstore.Get(),
+		promocodestore: promocodestore.Get(),
+		logger:         logger.GetLogger(),
 	}
+}
+func Get() Service {
+	if svc == nil {
+		svc = New()
+	}
+	return svc
 }
